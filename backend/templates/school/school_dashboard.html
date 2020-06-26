@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load notifications_tags %}
+{% load static %}
+{% block title %} eStudy {% endblock %}
+{% block navbar %}
+{% if user.is_authenticated %}
+<div class="col-12">
+  <nav class="navbar navbar-expand-md navbar-light bg-light pr-0">
+    <a class="navbar-brand" href="{% url 'schoollogin' %}" style="overflow:hidden; width:70%;">{{school}}</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="true" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="w-70 navbar-collapse collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav ml-auto">
+
+        <li class="nav-item {% if not 'profile' in request.path and not 'support' in request.path %}active{% endif %}"><a class="nav-link" href="{% url 'schoollogin' %} ">HOME</a></li>
+        <li class="nav-item {% if 'profile' in request.path %}active{% endif %} "><a class="nav-link" href="{% url 'school_school_update' user.id %}">PROFIL</a></li>
+        <!-- <li class="nav-item "><a class="nav-link" href="">SUPPORT</a></li> -->
+        <li class="nav-item"><a class="nav-link" href="{% url 'logout'%}">LOGOUT</a></li>
+      </ul>
+
+    </div>
+  </nav>
+</div>
+{% endif %}
+{% endblock %}
+{% block content %}
+<div class="card h-100">
+  <div class="card-header card-title">
+    <div class="row">
+      <div class="col">
+        <marquee behavior="" direction="">Welcome To {{school}}</marquee>
+      </div>
+    </div>
+  </div>
+  <div class="animated fadeIn p-2">
+    <div class="row">
+
+     {% comment %} <a href="{% url 'sendNotification' %}" class="text-center">hello send notification</a> {% endcomment %}
+
+      <div class="col-lg-3 col-md-12 mb-4">
+
+        <!--Card-->
+        <div class="card">
+          <a href="{% url 'school_student_list' %}" class="text-center">
+            <!-- Card header -->
+            <div class="card-header waves-effect">Students</div>
+            <!--Card content-->
+            <div data-toggle="tooltip" title="{{total_student}} registered students" class="card-body waves-effect text-center " style="font-size:4rem; padding:0.5rem;">
+
+              <span class="badge badge-info">{{total_student}}</span>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-12 mb-4">
+        <!--Card-->
+        <div class="card">
+          <a href="{% url 'school_teacher_list' %}" class="text-center">
+            <!-- Card header -->
+            <div class="card-header waves-effect">Teachers</div>
+            <!--Card content-->
+            <div data-toggle="tooltip" title="{{total_teacher}} registered students" class="card-body waves-effect text-center" style="font-size:4rem; padding:0.5rem;">
+
+              <span class="badge badge-info">{{total_teacher}}</span>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-12 mb-4">
+        <!--Card-->
+        <div class="card">
+          <a href="{% url 'school_class_list' %}" class="text-center">
+            <!-- Card header -->
+            <div class="card-header waves-effect">Classes</div>
+            <!--Card content-->
+            <div data-toggle="tooltip" title="{{total_class}} registered students" class="card-body waves-effect text-center" style="font-size:4rem; padding:0.5rem;">
+
+              <span class="badge badge-info">{{total_class}}</span>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-12 mb-4">
+        <!--Card-->
+        <div class="card">
+          <a href="{% url 'school_course_list' %}" class="text-center">
+            <!-- Card header -->
+            <div class="card-header waves-effect">Courses</div>
+            <!--Card content-->
+            <div data-toggle="tooltip" title="{{total_course}} registered students" class="card-body waves-effect text-center" style="font-size:4rem; padding:0.5rem;">
+
+              <span class="badge badge-info">{{total_course}}</span>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-12 mb-4">
+        <!--Card-->
+        <div class="card">
+          <a href="{% url 'school_send_notification' %}" class="text-center">
+            <!-- Card header -->
+            <div class="card-header waves-effect">Send Notification</div>
+            <!--Card content-->
+            <div data-toggle="tooltip" title="{{total_course}} registered students" class="card-body waves-effect text-center" style="font-size:4rem; padding:0.5rem;">
+            <span class="badge badge-info"><i class="fa fa-bell" aria-hidden="true"></i></span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+<html>
+
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <title>{{school}}</title>
+  <style>
+    body {
+      /* background-color: #f7f7f7; */
+      font-family: "Open Sans", Calibri, Candara, Arial, sans-serif;
+    }
+  </style>
+</head>
+
+<body class="w-100 justify-content-center text-center">
+  <h1 class="text-center">{{school}}</h1>
+  <h3 class="text-center">Student List</h3>
+  <div class="table-responsive col-12">
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Gender</th>
+          <th scope="col">Class</th>
+          <th scope="col">FatherName</th>
+          <th scope="col">MotherName</th>
+          <th scope="col">Address</th>
+          <th scope="col">Phone</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for student in students %}
+        <tr>
+          <th scope="row">{{ forloop.counter }}</th>
+          <td>{{student.name}}</td>
+          <td>{{student.gender}}</td>
+          <td>{{student.clas.name}}</td>
+          <td>{{student.fatherName}}</td>
+          <td>{{student.motherName}}</td>
+          <td>{{student.address}}</td>
+          <td>{{student.phone}}</td>
+        </tr>
+        {% endfor %}
+
+      </tbody>
+    </table>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block css %}
+<style>
+  .table-container {
+    width: 100% !important;
+  }
+
+  @media only screen and (max-width: 772px) {
+
+    .dt-delete {
+      margin-top: 5px;
+    }
+  }
+
+  #example_filter {
+    text-align: right;
+  }
+
+  .buttons-pdf,
+  .buttons-excel,
+  .buttons-print {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 5px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px;
+    overflow: hidden;
+  }
+</style>
+{% endblock %}
+{% block navbar %}
+{% if user.is_authenticated %}
+<div class="col-12">
+  <nav class="navbar navbar-expand-md navbar-light bg-light pr-0">
+    <a class="navbar-brand" href="{% url 'schoollogin' %}" style="overflow:hidden; width:70%;">{{school}}</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="true" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="w-70 navbar-collapse collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav ml-auto">
+
+        <li class="nav-item {% if not 'profile' in request.path and not 'support' in request.path %}active{% endif %}"><a class="nav-link" href="{% url 'schoollogin' %} ">HOME</a></li>
+        <li class="nav-item {% if 'profile' in request.path %}active{% endif %} "><a class="nav-link" href="{% url 'school_school_update' user.id %}">PROFIL</a></li>
+        <!-- <li class="nav-item "><a class="nav-link" href="">SUPPORT</a></li> -->
+        <li class="nav-item"><a class="nav-link" href="{% url 'logout'%}">LOGOUT</a></li>
+      </ul>
+
+    </div>
+  </nav>
+</div>
+{% endif %}
+{% endblock %}
+
+
+{% block content %}
+<div class="container-fluid">
+  <div class="animated fadeIn mt-5">
+    <div class="card-header card-title">
+      <div class="row">
+        <div class="col">
+          <marquee behavior="" direction="">Welcome To {{school}}</marquee>
+        </div>
+      </div>
+    </div>
+    {% for message in messages %}
+
+    <div class="alert {{ message.tags }} alert-dismissible mt-2" role="alert" id="msg">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      {{ message }}
+    </div>
+    <script type="text/javascript">
+      function myFunction() {
+        document.getElementById("msg").style.display = 'none';
+      }
+      setTimeout(myFunction, 10000);
+    </script>
+    {% endfor %}
+    <div class="card">
+      <div class="card-header text-center">Update Course</div>
+      <div class="card-body">
+        <form method="post" action="{% url 'school_update_course' pk=form.instance.id %}">
+          {% csrf_token %}
+
+          <div class="form-content">
+            <div class="row">
+              <div class="col-lg-6">
+
+                {% for error in form.name.errors %}
+                <small id="passwordHelp" class="text-danger">{{ error }} </small>
+                {% endfor %}
+                <div class="form-group">
+                  {% render_field form.name class="form-control" placeholder="Course name" %}
+                </div>
+              </div>
+              <div class="col-lg-3">
+
+                {% for error in form.clas.errors %}
+                <small id="passwordHelp" class="text-danger">{{ error }} </small>
+                {% endfor %}
+                <div class="form-group">
+                  <select name="clas" placeholder="Course name" class="form-control" required="" id="id_clas">
+                    <option value="" >Select class</option>
+                    {% for e in classes %}
+                    <option value="{{e.id}}" '{% if form.instance.clas == e %} selected="" {% endif %}'>{{e}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <div class="text-center col-lg-2">
+                <button type="submit" class="btn btn-success">Update Course</button>
+              </div>
+            </div>
+
+          </div>
+        </form>
+        <table id="example" class="table table-bordered table-striped" style="width:100%">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Assignment</th>
+              <th>Description</th>
+              <th>Score</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for e in data %}
+
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{e.name}}</td>
+              <td>{{e.description}}</td>
+              <td>{{e.maxPoints}}</td>
+              <td class="justify-content-center text-center">
+
+                {% comment %} <a href="{% url 'school_delete_course' e.id %}" class="btn btn-primary btn-xs dt-edit">
+                  <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                </a> {% endcomment %}
+
+                {{form.id}}
+                <a href="{% url 'school_delete_assignment' form.instance.id e.id %}" class="btn btn-danger btn-xs dt-delete">
+                  <i class="fa fa-trash" aria-hidden="true"></i>
+                </a>
+
+
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block javascript %}
+<script>
+  $(document).ready(function() {
+    var table = $('#example').DataTable({
+      lengthChange: false,
+      responsive: true,
+      buttons: ['excel', 'print', {
+        extend: 'pdfHtml5',
+        orientation: 'landscape',
+        customize: function(doc) {
+          var rowCount = doc.content[1].table.body.length;
+          for (i = 1; i < rowCount; i++) {
+            for (k = 0; k < doc.content[1].table.body[i].length; k++) {
+              doc.content[1].table.body[i][k].alignment = 'center';
+            }
+          };
+          var colCount = new Array();
+          $('#example').find('tbody tr:first-child td').each(function() {
+            if ($(this).attr('colspan')) {
+              for (var i = 1; i <= $(this).attr('colspan'); $i++) {
+                colCount.push('*');
+              }
+            } else {
+              colCount.push('*');
+            }
+          });
+          doc.content[1].table.widths = colCount;
+
+        }
+      }],
+
+    });
+
+    table.buttons().container()
+      .appendTo('#example_wrapper .col-md-6:eq(0)');
+  });
+</script>
+{% endblock %}

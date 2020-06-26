@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load static %}
+{% block css %}
+<style>
+  .card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    max-width: 300px;
+    margin: auto;
+    text-align: center;
+    font-family: arial;
+  }
+
+  .title {
+    color: grey;
+    font-size: 18px;
+  }
+
+  button {
+    border: none;
+    outline: 0;
+    display: inline-block;
+    padding: 8px;
+    color: white;
+    background-color: #000;
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
+    font-size: 18px;
+  }
+
+  button:hover,
+  a:hover {
+    opacity: 0.7;
+  }
+
+  .grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    padding: 10px;
+  }
+
+  a:link {
+    text-decoration: none;
+  }
+
+  a {
+    color: white;
+  }
+
+  .global-container {
+    background-color: #f5f5f5;
+  }
+</style>
+
+{% endblock %}
+
+{% block content %}
+<div class="d-flex global-container justify-content-center align-items-center" style="height:80%;">
+  <div class="mx-auto">
+    <div class="col-12 justify-content-center align-items-center">
+      <div class="justify-content-center align-items-center">
+        <img class="rounded mx-auto d-block" src="{% static 'images/logo.svg' %}">
+      </div>
+    </div>
+    <div class="grid-container justify-content-center align-items-center">
+
+      <div class="row">
+
+
+
+        <div class="grid-item  col-12 p-3">
+          <a href="{% url 'studentclick' %}">
+            <div class="card">
+              <!-- <img class="rounded-circle" src="{% static 'images/student1.png' %}" alt="John" style="width:100%"> -->
+              <p class="my-1"><button>STUDENT</button></p>
+            </div>
+          </a>
+        </div>
+
+        <div class="grid-item  col-12 p-3">
+          <a href="{% url 'teacherclick' %}">
+            <div class="card">
+              <!-- <img class="rounded-circle" src="{% static 'images/teacher.png' %}" alt="John" style="width:100%"> -->
+              <p class="my-1"><button>TEACHER</button></p>
+            </div>
+
+        </div>
+        <div class="grid-item col-12 p-3">
+          <a href="{% url 'schoolclick' %}">
+            <div class="card">
+              <!-- <img class="rounded-circle" src="{% static 'images/admin.png' %}" alt="John" style="width:100%"> -->
+              <p class="my-1"><button>SCHOOL</button></p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

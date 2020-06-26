@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block css %}
+<style>
+  .table-container {
+    width: 100% !important;
+  }
+
+  @media only screen and (max-width: 772px) {
+
+    .dt-delete {
+      margin-top: 5px;
+    }
+  }
+
+  #example_filter {
+    text-align: right;
+  }
+
+  .buttons-pdf,
+  .buttons-excel,
+  .buttons-print {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 5px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px;
+    overflow: hidden;
+  }
+</style>
+{% endblock %}
+{% block navbar %}
+{% if user.is_authenticated %}
+<div class="col-12">
+  <nav class="navbar navbar-expand-md navbar-light bg-light pr-0">
+    <a class="navbar-brand" href="{% url 'student_login' %}" style="overflow:hidden; width:70%;">{{school}}</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="true" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="w-70 navbar-collapse collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav ml-auto">
+
+        <li class="nav-item {% if not 'update_student' in request.path and not 'support' in request.path %}active{% endif %}"><a class="nav-link" href="{% url 'student_login' %} ">HOME</a></li>
+        <li class="nav-item {% if 'update_student' in request.path %}active{% endif %} "><a class="nav-link" href="{% url 'student_student_update' user.id %}">PROFIL</a></li>
+        <!-- <li class="nav-item "><a class="nav-link" href="">SUPPORT</a></li> -->
+        <li class="nav-item"><a class="nav-link" href="{% url 'student_logout'%}">LOGOUT</a></li>
+      </ul>
+
+    </div>
+  </nav>
+</div>
+{% endif %}
+{% endblock %}
+
+
+{% block content %}
+<div class="container-fluid">
+  <div class="animated fadeIn mt-5">
+    <div class="card-header card-title">
+      <div class="row">
+        <div class="col">
+          <marquee behavior="" direction="">Welcome To {{school}}</marquee>
+        </div>
+      </div>
+    </div>
+    {% for message in messages %}
+
+    <div class="alert {{ message.tags }} alert-dismissible mt-2" role="alert" id="msg">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      {{ message }}
+    </div>
+    <script type="text/javascript">
+      function myFunction() {
+        document.getElementById("msg").style.display = 'none';
+      }
+      setTimeout(myFunction, 10000);
+    </script>
+    {% endfor %}
+    <div class="card">
+      <div class="card-header text-center">{{course}}
+      </div>
+      <div class="card-body">
+        <table id="example" class="table table-bordered table-striped" style="width:100%">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Name</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Score</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for e in data %}
+
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{e.name}}</td>
+              <td>{{e.startDate}}</td>
+              <td>{{e.endDate}}</td>
+              <td>{{e.maxPoints}}</td>
+              <td class="justify-content-center text-center">
+
+                <a href="{% url 'student_view_assignments_detail' course.id e.id %}" class="btn btn-primary btn-xs dt-edit">
+                  <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                </a>
+
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block javascript %}
+<script>
+  $(document).ready(function() {
+        var table = $('#example').DataTable({});
+</script>
+{% endblock %}

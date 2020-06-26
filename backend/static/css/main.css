@@ -1,0 +1,14 @@
+/* veomo header css */
+/* @media all and (min-width: 813px) {
+  #navbarSupportedContent {
+    font-family: Montserrat;
+    font-size: 1em;
+    font-weight: 100;
+    letter-spacing: 0.1em;
+  }
+} */
+/* navbar style */
+.navbar-nav li a:hover, .navbar-nav li.active a {
+  color: #FFFFFF !important;
+  background-color: #111111 !important;
+}

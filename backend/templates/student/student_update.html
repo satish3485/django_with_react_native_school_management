@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block css%}
+<style media="screen">
+  .imagePreview {
+    width: 150px;
+    height: 150px;
+    background-position: center center;
+    background-color: #fff;
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: block;
+    box-shadow: 0px -3px 6px 2px rgba(0, 0, 0, 0.2);
+  }
+
+  .btn-primary {
+    display: block;
+    border-radius: 0px;
+    box-shadow: 0px 4px 6px 2px rgba(0, 0, 0, 0.2);
+    margin-top: -5px;
+  }
+
+  .imgUp {
+    margin-bottom: 15px;
+  }
+</style>
+{% endblock %}
+
+{% block navbar %}
+{% if user.is_authenticated %}
+<div class="col-12">
+  <nav class="navbar navbar-expand-md navbar-light bg-light pr-0">
+    <a class="navbar-brand" href="{% url 'student_login' %}" style="overflow:hidden; width:70%;">{{school}}</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="true" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="w-70 navbar-collapse collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav ml-auto">
+
+        <li class="nav-item {% if not 'update_student' in request.path and not 'support' in request.path %}active{% endif %}"><a class="nav-link" href="{% url 'student_login' %} ">HOME</a></li>
+        <li class="nav-item {% if 'update_student' in request.path %}active{% endif %} "><a class="nav-link" href="{% url 'student_student_update' user.id %}">PROFIL</a></li>
+        <!-- <li class="nav-item "><a class="nav-link" href="">SUPPORT</a></li> -->
+        <li class="nav-item"><a class="nav-link" href="{% url 'student_logout'%}">LOGOUT</a></li>
+      </ul>
+
+    </div>
+  </nav>
+</div>
+{% endif %}
+{% endblock %}
+
+
+
+{% block content %}
+<div class="container-fluid">
+  <div class="animated fadeIn mt-2">
+    <div class="card-header card-title">
+      <div class="row">
+        <div class="col">
+          <marquee behavior="" direction="">Welcome To {{school}}</marquee>
+        </div>
+      </div>
+    </div>
+    {% for message in messages %}
+
+    <div class="alert {{ message.tags }} alert-dismissible mt-2" role="alert" id="msg">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      {{ message }}
+    </div>
+    <script type="text/javascript">
+      function myFunction() {
+        document.getElementById("msg").style.display = 'none';
+      }
+      setTimeout(myFunction, 10000);
+    </script>
+    {% endfor %}
+
+    <script type="text/javascript">
+      function previewFile() {
+        var preview = document.getElementById('teacherImageId');
+        var file = document.getElementById('teacherImageInputId').files[0];
+        var reader = new FileReader();
+
+        reader.onloadend = function() {
+          preview.src = reader.result;
+        }
+
+        if (file) {
+          reader.readAsDataURL(file);
+        } else {
+          preview.src = "{% get_media_prefix %}school/school.png";
+        }
+      }
+    </script>
+    <div class="card">
+      <div class="card-header text-center">Student details</div>
+      <div class="card-body">
+        <form method="post" action="{% url 'student_student_update' pk=user.id %}" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="form-content">
+            <div class="row">
+              <div class="container col-12">
+                <div class="row align-center justify-content-center">
+                  <div class="imgUp">
+                    <div class="imagePreview">
+                      <label for="teacherImageInputId">
+                        <img src="{{form.instance.image.url}}?cachebuster=+ Math.floor(Math.random()*100 +1)" id="teacherImageId" class="img-thumbnail card-img-top" alt="teacher image" style="width:150px;height:150px;">
+                      </label>
+                    </div>
+                    <label class="btn btn-primary">
+                      Upload
+                      <div class="d-none">
+                        {% render_field form.image class="form-control d-none" value="Upload Photo" style="width: 0px;height: 0px;overflow: hidden;" onchange="previewFile()" id="teacherImageInputId" placeholder="" %}
+
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                {% for error in form1.username.errors %}
+                <small id="passwordHelp" class="text-danger">{{ error }} </small>
+                {% endfor %}
+                <div class="form-group">
+                  {% render_field form1.username class="form-control" placeholder="username" value=form1.username  readonly=true %}
+                </div>
+
+                <div class="form-group">
+                  <a href="{% url 'student_change_password' pk=user.id %}" class="btn btn-secondary">Change password</a>
+                </div>
+                {% for error in form.name.errors %}
+                <small id="passwordHelp" class="text-danger">{{ error }} </small>
+                {% endfor %}
+                <div class="form-group">
+                  {% render_field form.name class="form-control" placeholder="Name" value=form.name.instance readonly=true %}
+                </div>
+                {% for error in form.phone.errors %}
+                <small id="passwordHelp" class="text-danger">{{ error }} </small>
+                {% endfor %}
+                <div class="form-group">
+                  {% render_field form.phone class="form-control" placeholder="Phone Number" value=form.phone.instance readonly=true %}
+                </div>
+                {% for error in form.email.errors %}
+                <small id="passwordHelp" class="text-danger">{{ error }} </small>
+                {% endfor %}
+                <div class="form-group">
+                  {% render_field form.email class="form-control" placeholder="Email" value=form.email.instance readonly=true %}
+                </div>
+                {% for error in form.motherName.errors %}
+                <small id="passwordHelp" class="text-danger">{{ error }} </small>
+                {% endfor %}
+                <div class="form-group">
+                  {% render_field form.motherName class="form-control" placeholder="Email" value=form.motherName.instance readonly=true %}
+                </div>
+              </div>
+              <div class="col-lg-6">
+
+
+                {% for error in form.dateofbirth.errors %}
+                <small id="passwordHelp" class="text-danger">{{ error }} </small>
+                {% endfor %}
+                <div class="form-group">
+                  {% render_field form.dateofbirth class="form-control" placeholder="Degree" value=form.dateofbirth.instance readonly=true %}
+                </div>
+                {% for error in form.fatherName.errors %}
+                <small id="passwordHelp" class="text-danger">{{ error }} </small>
+                {% endfor %}
+                <div class="form-group">
+                  {% render_field form.fatherName class="form-control" placeholder="Date of birth" type="date" value=form.fatherName.instance  readonly=true %}
+                </div>
+                {% for error in form.gender.errors %}
+                <small id="passwordHelp" class="text-danger">{{ error }} </small>
+                {% endfor %}
+                <div class="form-group">
+                  {% render_field form.gender class="form-control" placeholder="Gender" selected=form.gender.instance readonly=true %}
+                </div>
+                {% for error in form.address.errors %}
+                <small id="passwordHelp" class="text-danger">{{ error }} </small>
+                {% endfor %}
+                <div class="form-group">
+                  {% render_field form.address class="form-control" placeholder="Address" value=form.address.instance readonly=true %}
+                </div>
+              </div>
+              <div class="form-group  col-12">
+                <label for="exampleFormControlTextarea1">About</label>
+                {% render_field form.about class="form-control" placeholder="description" style="overflow: hidden;" rows="3" value=form.instance.about.instance readonly=true %}
+              </div>
+            </div>
+            <div class="text-center">
+              <button type="submit" class="btn btn-success p-3 m-4">Submit</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

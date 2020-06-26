@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block css%}
+<style media="screen">
+  .imagePreview {
+    width: 150px;
+    height: 150px;
+    background-position: center center;
+    background-color: #fff;
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: block;
+    box-shadow: 0px -3px 6px 2px rgba(0, 0, 0, 0.2);
+  }
+
+  .btn-primary {
+    display: block;
+    border-radius: 0px;
+    box-shadow: 0px 4px 6px 2px rgba(0, 0, 0, 0.2);
+    margin-top: -5px;
+  }
+
+  .imgUp {
+    margin-bottom: 15px;
+  }
+  #studentOption {
+      display:none;
+  }
+  #classOption {
+      display:none;
+  }
+</style>
+{% endblock %}
+
+
+{% block navbar %}
+{% if user.is_authenticated %}
+<div class="col-12">
+  <nav class="navbar navbar-expand-md navbar-light bg-light pr-0">
+    <a class="navbar-brand" href="{% url 'schoollogin' %}" style="overflow:hidden; width:70%;">{{school}}</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="true" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="w-70 navbar-collapse collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav ml-auto">
+
+        <li class="nav-item {% if not 'profile' in request.path and not 'support' in request.path %}active{% endif %}"><a class="nav-link" href="{% url 'schoollogin' %} ">HOME</a></li>
+        <li class="nav-item {% if 'profile' in request.path %}active{% endif %} "><a class="nav-link" href="{% url 'school_school_update' user.id %}">PROFIL</a></li>
+        <!-- <li class="nav-item "><a class="nav-link" href="">SUPPORT</a></li> -->
+        <li class="nav-item"><a class="nav-link" href="{% url 'logout'%}">LOGOUT</a></li>
+      </ul>
+
+    </div>
+  </nav>
+</div>
+{% endif %}
+{% endblock %}
+
+
+
+{% block content %}
+<div class="container-fluid">
+  <div class="animated fadeIn mt-2">
+    <div class="card-header card-title">
+      <div class="row">
+        <div class="col">
+          <marquee behavior="" direction="">Welcome To {{school}}</marquee>
+        </div>
+      </div>
+    </div>
+    {% for message in messages %}
+
+    <div class="alert {{ message.tags }} alert-dismissible mt-2" role="alert" id="msg">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      {{ message }}
+    </div>
+    <script type="text/javascript">
+      function myFunction() {
+        document.getElementById("msg").style.display = 'none';
+      }
+      setTimeout(myFunction, 10000);
+
+    </script>
+    {% endfor %}
+    <script type="text/javascript">
+    function selectusertosendfun() {
+        var x = document.getElementById("selectusertosend").value;
+        document.getElementById("studentOption").style.display ="none";
+        document.getElementById("classOption").style.display ="none";
+        if(x == "specificStudent"){
+            document.getElementById("studentOption").style.display ="block";
+        }else if(x == "specificClass"){
+            document.getElementById("classOption").style.display ="block";
+        }
+        
+    }
+
+    </script>
+
+    <div class="card">
+      <div class="card-header text-center">Send Notification</div>
+      <div class="card-body">
+        <form method="post" action="{% url 'school_send_notification' %}" enctype="multipart/form-data">
+          {% csrf_token %}
+            <div class="form-group">
+                <label for="exampleInputEmail1">Title</label>
+                <input type="text" class="form-control" name="notificationTitle" id="notificationTitle" aria-describedby="emailHelp" placeholder="title">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">Description</label>
+                <textarea class="form-control" name="notificationTextarea" id="notificationTextarea" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="exampleFormControlSelect1">Send To</label>
+                <select class="form-control" name="selectusertosends" id="selectusertosend" onchange="selectusertosendfun()">
+                    <option value="all">All Students and Teachers</option>
+                    <option value="allStudent">All Students</option>
+                    <option value="specificClass">Specific Class</option>
+                    <option value="specificStudent">Specific Student</option>
+                </select>
+            </div>
+            <div class="form-group" id="classOption">
+                <select name="class" placeholder="Course name" class="form-control" required="" id="id_clas">
+                    <option value="all" selected="all">Select Class</option>
+                    {% for e in classes %}
+                        <option value="{{e.id}}">{{e}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group" id="studentOption">
+                <select name="student" placeholder="Course name" class="form-control" required="" id="id_clas">
+                    <option value="all" selected="all">Select Student</option>
+                    {% for e in students %}
+                        <option value="{{e.id}}">{{e}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Send</button>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

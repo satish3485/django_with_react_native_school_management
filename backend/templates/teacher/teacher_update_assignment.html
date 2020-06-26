@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block css %}
+<style>
+  .table-container {
+    width: 100% !important;
+  }
+
+  @media only screen and (max-width: 772px) {
+
+    .dt-delete {
+      margin-top: 5px;
+    }
+  }
+
+  #example_filter {
+    text-align: right;
+  }
+
+  .buttons-pdf,
+  .buttons-excel,
+  .buttons-print {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 5px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px;
+    overflow: hidden;
+  }
+</style>
+{% endblock %}
+{% block navbar %}
+{% if user.is_authenticated %}
+<div class="col-12">
+  <nav class="navbar navbar-expand-md navbar-light bg-light pr-0">
+    <a class="navbar-brand" href="{% url 'teacher_login' %}" style="overflow:hidden; width:70%;">{{school}}</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="true" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="w-70 navbar-collapse collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav ml-auto">
+
+        <li class="nav-item {% if not 'profile' in request.path and not 'support' in request.path %}active{% endif %}"><a class="nav-link" href="{% url 'teacher_login' %} ">HOME</a></li>
+        <li class="nav-item {% if 'profile' in request.path %}active{% endif %} "><a class="nav-link" href="{% url 'teacher_teacher_update' user.id %}">PROFIL</a></li>
+        <!-- <li class="nav-item "><a class="nav-link" href="">SUPPORT</a></li> -->
+        <li class="nav-item"><a class="nav-link" href="{% url 'teacher_logout'%}">LOGOUT</a></li>
+      </ul>
+
+    </div>
+  </nav>
+</div>
+{% endif %}
+{% endblock %}
+
+
+{% block content %}
+<div class="container-fluid">
+  <div class="animated fadeIn mt-5">
+    <div class="card-header card-title">
+      <div class="row">
+        <div class="col">
+          <marquee behavior="" direction="">Welcome To {{school}}</marquee>
+        </div>
+      </div>
+    </div>
+    {% for message in messages %}
+
+    <div class="alert {{ message.tags }} alert-dismissible mt-2" role="alert" id="msg">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      {{ message }}
+    </div>
+    <script type="text/javascript">
+      function myFunction() {
+        document.getElementById("msg").style.display = 'none';
+      }
+      setTimeout(myFunction, 10000);
+    </script>
+    {% endfor %}
+    <div class="card">
+      <div class="card-header text-center">{{course}}
+        <!-- <a href="{% url 'teacher_create_assignments' course.id %}" class="btn btn-success btn-sm float-right">
+          Add Assignment </a> -->
+      </div>
+      <div class="card-body">
+        <form method="post" action="{% url 'teacher_update_assignment' course.id form.instance.id %}" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <div class="form-content">
+            <div class="row">
+              <div class="col-lg-6">
+
+                {% for error in form.name.errors %}
+                <small id="passwordHelp" class="text-danger">{{ error }} </small>
+                {% endfor %}
+                <div class="form-group">
+                  {% render_field form.name class="form-control" placeholder="Course name" value=form.name.instance %}
+                </div>
+
+
+                {% for error in form.description.errors %}
+                <small id="passwordHelp" class="text-danger">{{ error }} </small>
+                {% endfor %}
+                <div class="form-group">
+                  {% render_field form.description class="form-control" placeholder="description" value=form.description.instance %}
+                </div>
+                {% for error in form.startDate.errors %}
+                <small id="passwordHelp" class="text-danger">{{ error }} </small>
+                {% endfor %}
+                <div class="form-group">
+                  {% render_field form.startDate class="form-control" placeholder="start date" type="date" value=form.startDate.instance %}
+                </div>
+              </div>
+              <div class="col-lg-6">
+                {% for error in form.endDate.errors %}
+                <small id="passwordHelp" class="text-danger">{{ error }} </small>
+                {% endfor %}
+                <div class="form-group">
+                  {% render_field form.endDate class="form-control" placeholder="end date" type="date" required=true value=form.endDate.instance %}
+                </div>
+                {% for error in form.maxPoints.errors %}
+                <small id="passwordHelp" class="text-danger">{{ error }} </small>
+                {% endfor %}
+                <div class="form-group">
+                  {% render_field form.maxPoints class="form-control" placeholder="score" value=form.maxPoints.instance %}
+                </div>
+                {% for error in form.image.errors %}
+                <small id="passwordHelp" class="text-danger">{{ error }} </small>
+                {% endfor %}
+                <div class="form-group">
+                  {% render_field form.image class="form-control-file" placeholder="file" value=form.image.instance %}
+                </div>
+
+              </div>
+
+
+            </div>
+            <div class="text-center col-lg-12">
+              <button type="submit" class="btn btn-success">Submit</button>
+            </div>
+
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block javascript %}
+
+{% endblock %}
